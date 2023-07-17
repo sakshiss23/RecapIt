@@ -38,6 +38,11 @@
   filter: invert(1);
 }
 
+.downloadButton:hover{
+  border: 1px solid dodgerblue !important;
+  @apply font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent;
+}
+
 .gradient {
   height: fit-content;
   z-index: 3;

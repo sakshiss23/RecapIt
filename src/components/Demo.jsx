@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from "react";
-
+import { saveAs } from "file-saver";
+import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
 import { copy, linkIcon, loader, tick } from "../assets";
 import { useLazyGetSummaryQuery } from "../services/article";
 
+// This is the PDFDocument component
+const PDFDocument = ({ summary }) => (
+  <Document>
+    <Page>
+      <Text>{summary}</Text>
+    </Page>
+  </Document>
+);
+
 const Demo = () => {
+  const [isHovered, setIsHovered] = useState(false);
   const [article, setArticle] = useState({
     url: "",
     summary: "",
@@ -57,6 +68,14 @@ const Demo = () => {
     if (e.keyCode === 13) {
       handleSubmit(e);
     }
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
   };
 
   return (
@@ -128,9 +147,32 @@ const Demo = () => {
         ) : (
           article.summary && (
             <div className="flex flex-col gap-3">
-              <h2 className="font-satoshi font-bold text-gray-600 text-xl">
-                Article <span className="blue_gradient">Summary</span>
-              </h2>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <h2 className="font-satoshi font-bold text-gray-600 text-xl">
+                  Article <span className="blue_gradient">Summary</span>
+                </h2>
+                <PDFDownloadLink
+                  className="orange_gradient downloadButton"
+                  style={{
+                    border: "1px solid orange",
+                    padding: "5px 15px",
+                    fontWeight: "bold",
+                  }}
+                  document={<PDFDocument summary={article.summary} />}
+                  fileName={`${article.url}.pdf`}
+                >
+                  {({ loading }) =>
+                    loading ? "Generating PDF..." : "Download PDF"
+                  }
+                </PDFDownloadLink>
+              </div>
+
               <div className="summary_box">
                 <p className="font-inter font-medium text-sm text-gray-700">
                   {article.summary}
